@@ -1,18 +1,8 @@
 <?php
 $text = $_POST['lhs'];
 
-$servername = "localhost";
-$username = "root";
-$password = "nazari@0794";
-$dbname = "lhs";
+include_once './db.php';
 
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
 
 $f = explode("\n", $text);
 

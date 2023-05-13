@@ -1,3 +1,5 @@
+
+
 <html lang="en">
 <head>
 <style>
@@ -10,12 +12,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="margin: 10px;"
     
-    <form action="/lhs-global-main/creator.php">    
+    <form action="./creator.php">    
     Count User to create <input type="number" id="count" name="count" placeholder="Insert Count User to create"><br>
     Config Tag ID <input type="text" id="config_tag_id" name="config_tag_id" value="1" placeholder="Insert config_tag_id"><br>
-    <input type="Submit" value="Submit">
+    <hr>
+    Started From First Use <input type="checkbox" name="started" value="0"> <br>
+    ExpireDay<input  type="number" value="30" name="day" > 
+
+      <hr>
+    <input type="submit" value="Submit">
 </form>
 </body>
 </html>

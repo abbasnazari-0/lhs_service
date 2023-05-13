@@ -1,18 +1,7 @@
 <?php
 // mysql
-$servername = "localhost";
-$username = "root";
-$password = "nazari@0794";
-$dbname = "lhs";
+include_once './db.php';
 
-
-// ????? ?????? ?? ?????? ????
-$conn = mysqli_connect($servername, $username, $password, $dbname);
- 
-// ?? ???? ?????
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
 echo "Connected successfully\n";
 
 if(isset($_GET['id'])){
