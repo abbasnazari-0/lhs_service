@@ -2,25 +2,36 @@
 
 include_once './db.php';
 
+$config_id = "";
 
 $config = $_REQUEST['config'];
-$first = $_REQUEST['first_range'];
-$secound = $_REQUEST['sec_range'];
+$first = @$_REQUEST['first_range'];
+$secound = @$_REQUEST['sec_range'];
+$com_rang = @$_REQUEST['com_rang'];
 
-$item_count ;
-if(!isset($_REQUEST['sec_range']) || strlen($_REQUEST['sec_range'] < 1)){
-    $item_count = 1;
+if(!isset($_REQUEST['com_rang']) || strlen($_REQUEST['com_rang']) < 1){
+    $item_count ;
+    if(!isset($_REQUEST['sec_range']) || strlen($_REQUEST['sec_range'] < 1)){
+        $item_count = 1;
+    }else{
+        $item_count  = $secound-$first+1 ;
+    }
+    for($i =$first; $i <=  $secound ;  $i++){
+        $config_id .= "".$i . ",";
+    }
+    $config_id  = substr($config_id, 0, -1);
+
 }else{
-    $item_count  = $secound-$first+1 ;
+    $config_id = $com_rang;
 }
 
-for($i =0; $i <  $item_count ;  $i++){
+
     // sql to delete a record
-    $id = $first + $i;
-$sql .= "INSERT INTO tbl_config (id, config)
-VALUES ('$id', '$config');";
+$sql = "INSERT INTO tbl_config (id, config)
+VALUES ('$config_id', '$config');";
 
-}
+die($sql);
+
 
 if ($conn->multi_query($sql) === TRUE) {
     echo "New records created successfully";

@@ -1,12 +1,28 @@
 <html>
-<head>
-
-</head>
-<body>
+	<head>
+		<style>
+		</style>
+		  <title>Bootstrap Example</title>
+		  <meta charset="utf-8">
+		  <meta name="viewport" content="width=device-width, initial-scale=1">
+		  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+		  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+		</head>
+<body style="margin: 50px;">
+	<h1>INSERT CONFIG TO USER CONFIG TAGS</h1><hr>
 	<form action="/lhs-global-main/range_editor.php">
-		<input type="number" placeholder="enter first range" id="first_range" name="first_range"/>
+		<h4>Range Adder, Ex: 1-100</h4>
+		<input type="number" placeholder="enter first range" id="first_range" name="first_range"/> <p></p>
 		<input type="number" placeholder="enter secound range" id="sec_range" name="sec_range"/>
-		<textarea id="config" name="config" row="150" col="150" placeholder="config"></textarea>
+		<hr>
+		<h4>Config tags by columns</h4>
+		<input type="text" placeholder="ex: 1,2,5,9" id="com_range" name="com_rang"/>
+		<br>
+		<hr>
+		<br>
+		<textarea id="config" name="config" row="180" col="180" placeholder="ex: vless://xxxxxxxxxxx" style="width: 100%; height: 232px;"></textarea>
+		<br><br>
 		<input type="submit" >
 	</form>
 </body>
