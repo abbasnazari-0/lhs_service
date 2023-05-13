@@ -25,27 +25,16 @@ if(checkHistoryLog($conn,$ip, $user_token) == true){
  // die(base64_encode("vless://707c8b79-2eee-46e2-87d6-504b7a0cc4vv@gdgs.dgsdgds:3543?sni=gdgs.dgsdgds&security=tls&type=grpc&serviceName=ASDcME1o#You User Too Request in this day"));
 }
 
-//ip-----------------------------
-$ip_address = $_SERVER['REMOTE_ADDR'];
-$url = "https://api.iplocation.net/?ip=".$ip_address;
-$data = file_get_contents($url);
-$response = json_decode($data, true);
-$txt =  "Your ISP: " . $response['isp'];
-$cc =  "your country is : " . $response['country_code2'];
-
-$myfile = fopen("newfile.txt", "r") or die("Unable to open file!");
-
-fwrite($myfile,"\n". $txt . "\n" . $cc);
-//ip-----------------------------
-
  
-$sql = "SELECT tbl_user.*, tbl_config.*  
+$sql = "
+SELECT tbl_user.id AS user_id, tbl_user.config_tag_id, tbl_user.token, tbl_user.started, tbl_user.day, tbl_config.*  
 FROM tbl_user 
-INNER JOIN tbl_config ON tbl_user.config_tag_id = tbl_config.id 
-WHERE tbl_user.token = '641acd39e4b161bb56fad76a1b145f5bafdd37574c25e10f5b7a20644d04' 
-AND (tbl_user.time > UNIX_TIMESTAMP() OR tbl_user.time = 0) 
+ JOIN tbl_config ON FIND_IN_SET( tbl_user.config_tag_id, tbl_config.id)
+WHERE tbl_user.token = '$user_token' 
+AND (tbl_user.time > UNIX_TIMESTAMP() OR tbl_user.time = 0)
 ORDER BY tbl_config. id DESC;";
 $result = mysqli_query($conn, $sql);
+
 
 if (mysqli_num_rows($result) > 0) {
   // output data of each row
@@ -56,13 +45,15 @@ if (mysqli_num_rows($result) > 0) {
     $data .= $row["config"]."\n" ; 
 
     // Check for Is First time of get Subscribtaion data
-    if(!$checkedForFirst){
-      if($row ['started'] == '0' || $row ['started'] == 'false'){
-        $updateSQL = "UPDATE tbl_user SET started=true WHERE id="+$row['user_id'];
+    if( $checkedForFirst == false){
 
-        if ($conn->query($updateSQL) === TRUE) {
-          echo "StartedFromNow";
-        } else {
+      if($row['started'] == '0' || $row['started'] == 'false'){
+        $day = $row['day'];
+        $user_id  = $row['user_id'];
+        $updateSQL = "UPDATE tbl_user SET `started`='1',`time`= UNIX_TIMESTAMP(DATE_ADD(NOW(), INTERVAL $day DAY))  WHERE id=$user_id";
+      
+        if ($conn->query($updateSQL) === FALSE) {
+
           echo "Error updating record: " . $conn->error;
         }
       }
@@ -70,15 +61,11 @@ if (mysqli_num_rows($result) > 0) {
     }
 
 
-
-
-
-
   }
   echo base64_encode($data);
   
 } else {
-  echo base64_encode("vless://707c8b79-2eee-46e2-87d6-504b7a0cc4vv@gdgs.dgsdgds:3543?sni=gdgs.dgsdgds&security=tls&type=grpc&serviceName=ASDcME1o#اعتبار شما تمام شده است");
+  echo ("vless://707c8b79-2eee-46e2-87d6-504b7a0cc4vv@gdgs.dgsdgds:3543?sni=gdgs.dgsdgds&security=tls&type=grpc&serviceName=ASDcME1o#اعتبار شما تمام شده است");
 }
 
 
