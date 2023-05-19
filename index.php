@@ -42,7 +42,7 @@ $typeResult = mysqli_query($conn, $typesSQL);
 if (mysqli_num_rows($typeResult) > 0) {
   // output data of each row
   while($row = mysqli_fetch_assoc($typeResult)) {
-    $typesDomain[] = array($row['operator'] ,$row['domain']);
+    $typesDomain[] = array($row['operator'] ,$row['domain'], $row['title']);
   }
 
 }
@@ -58,12 +58,12 @@ JOIN tbl_config ON FIND_IN_SET( tbl_user.config_tag_id, tbl_config.id)
 LEFT JOIN tbl_plan ON tbl_user.config_tag_id = tbl_plan.id
 WHERE tbl_user.token = '$user_token'
 AND (tbl_user.time > UNIX_TIMESTAMP() OR tbl_user.time = 0)
-
+ORDER BY RAND();
 ";
 
 $result = mysqli_query($conn, $sql);
 
-
+header("Content-type:application/json");
 
 if (mysqli_num_rows($result) > 0) {
   // output data of each row
@@ -79,8 +79,8 @@ if (mysqli_num_rows($result) > 0) {
  
 
       if($domain[0] == $row['operator']){
-        $row["config"] = changeAddress($row["config"], $domain[1], $row['country'], $row['title'], $row['operator']);
-        $data .= $row["config"]."\n" ; 
+        $newConfig = changeAddress($row["config"], $domain[1], $row['country'], $row['title'], $domain[2]);
+        $data .=  $newConfig . "\n"; 
       }
      }
      
@@ -88,7 +88,8 @@ if (mysqli_num_rows($result) > 0) {
       //TODO :  vmess | vless generator cloudflare ip
     }else{
       
-      $data .= psChanger($row["config"], $row['country'], $row['title'], $row['operator'])."\n" ; 
+      
+      $data  .=  psChanger($row["config"], $row['country'], $row['title'], $domain[2])."\n" ; 
     }
     
 
@@ -111,7 +112,7 @@ if (mysqli_num_rows($result) > 0) {
 
 
   }
-  echo base64_encode($data);
+  echo ($data);
   
 } else {
   echo base64_encode("vless://707c8b79-2eee-46e2-87d6-504b7a0cc4vv@gdgs.dgsdgds:3543?sni=gdgs.dgsdgds&security=tls&type=grpc&serviceName=ASDcME1o#اعتبار شما تمام شده است");
@@ -148,7 +149,7 @@ function checkHistoryLog($conn, $ip, $user_token){
 }
 function country2flag($countryCode)
 {
-  return $countryCode;
+  
     $char1 = 0x1F1E6;
     $char2 = 0x1F1E6;
     $asciiA = 65;
@@ -192,16 +193,18 @@ function changeAddress($url, $newAddress, $country = "🚩", $title = "پرسر�
 function psChanger($url, $country = "🚩", $title = "پرسرعت ", $operator = "") {
   if (strpos($url, 'vless://') === 0) {
     if(str_contains($url , "#")){
-      $url = explode("#",$url)[0] . "#" . $title . " | " . country2flag($country) . " | " . strtoupper($operator);
+      $url = explode("#",$url)[0] . "#" .urlencode( $title . " | " . country2flag($country) . " | " . strtoupper($operator));
 
     }else{
-      $url =    $url . "#" . $title . " | " . country2flag($country) . " | " . strtoupper($operator);
+      $ps = urlencode($title . " | " . country2flag($country) . " | " . strtoupper($operator));
+      // echo $url;
+      $url =    $url . "#" .  $ps;
     }
     return $url;
     
   } elseif (strpos($url, 'vmess://') === 0) {
     $urlDecoded = json_decode(base64_decode(str_replace("vmess://", "" ,$url)), true);
-     $urlDecoded['ps'] = $title . " | " . country2flag($country) . " | " . strtoupper($operator);
+     $urlDecoded['ps'] = urlencode($title . " | " . country2flag($country) . " | " . strtoupper($operator));
      return "vmess://".base64_encode(json_encode($urlDecoded));
   }else{
     return $url;
